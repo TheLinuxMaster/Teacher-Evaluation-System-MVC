@@ -1,0 +1,51 @@
+﻿@model Teacher_Evaluation.View_Models.EVModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Evaluation</h2>
+
+<form action="\Main\ParticipantSave"  method="post" >
+    <table border="1" style="border-collapse:collapse; border-color:black; width:100%">
+        <tr>
+            <th>S #</th>
+            <th>Questions</th>
+            @foreach (var item in Model.courses)
+            {
+                <th>@item.Teacher.Name</th>
+            }
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+            @foreach (var item in Model.courses)
+            {
+                <th>@item.Title</th>
+            }
+        </tr>
+        @{
+            var grades = new List<String> { "A", "B", "C", "D" };
+        }
+        @foreach (var ques in Model.questions)
+        {
+            <tr>
+                <td>@ques.QId</td>
+                <td>@ques.Question1</td>
+                @foreach (var crs in Model.courses)
+                {
+                    <td>
+                        <select name="evaluation">
+                            @foreach (var grade in grades)
+                            {
+                                <option value="@(crs.CId+":"+ques.QId+":"+grade)">@grade</option>                              
+                            }
+
+                        </select>
+                    </td>
+                }
+            </tr>
+        }
+    </table>
+    <input type="submit" value="Submit" />
+</form>
+

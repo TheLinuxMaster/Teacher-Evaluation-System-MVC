@@ -1,0 +1,87 @@
+﻿@model Teacher_Evaluation.View_Models.EVModel
+
+@{
+    var grades = new List<String> { "A", "B", "C", "D" };
+    var totals = new Dictionary<String, int>() { { "A", 0 }, { "B", 0 }, { "C", 0 }, { "D", 0 } };
+    foreach (var ques in Model.questions)
+    {
+        foreach (var grade in grades)
+        {
+            foreach (var t in totals.Keys.ToList())
+            {
+                if (grade.Equals(t))
+                {
+                    totals[grade] += @Model.courses.Single().Evaluations.Where(e => e.QId == ques.QId).Count(g => g.Grade.Equals(grade));
+                }
+            }
+
+        }
+    }
+
+    int sum=0;
+
+    foreach (int m in totals.Values)
+    {
+        sum +=m;
+    }
+
+    var Average = new List<double>();
+    Average.Add((Double.Parse(totals["A"].ToString()) /Double.Parse(sum.ToString()))*100 );
+    Average.Add(((Double.Parse(totals["B"].ToString()) / (Double.Parse(sum.ToString()))*100)));
+    Average.Add(((Double.Parse(totals["C"].ToString()) / (Double.Parse(sum.ToString()))*100)));
+    Average.Add(((Double.Parse(totals["D"].ToString()) / (Double.Parse(sum.ToString()))*100)));
+
+}
+
+<table border="1" style="border-collapse:collapse; border-color:black; width:100%">
+    <tr>
+        <th>S #</th>
+        <th>Question</th>
+        @foreach (var grade in grades)
+        {
+            <th align="center">@grade</th>
+        }
+    </tr>
+
+    @foreach (var ques in Model.questions)
+    {
+        <tr>
+            <td>@ques.QId</td>
+            <td>@ques.Question1</td>
+            @foreach (var grade in grades)
+            {
+                <td aliggn="center">
+                    @Model.courses.Single().Evaluations.Where(e => e.QId == ques.QId).Count(g => g.Grade.Equals(grade))
+                </td>
+            } 
+        </tr>
+    }
+        <tr>
+            <td>
+             Total
+            <td>
+                @foreach (int m in totals.Values)
+                {
+                <td align="center">@m</td>
+                }
+        </tr> 
+    <tr>
+        <td>
+            Average
+        <td>
+            @foreach (int a in Average)
+            {
+            <td align="center">@a %</td>
+            }
+        </tr>   
+
+    <tr>
+        <td>
+            A+B:
+        <td>
+            <td align="center">@(Math.Round(Average[0]+Average[1],1)) %</td>
+            }
+        </tr> 
+                 
+</table>
+
